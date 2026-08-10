@@ -1,0 +1,20 @@
+{
+  "//": "Ordered list of patch directories per patched package. This is the source of truth for which patches exist and in what order they apply. Versions are not listed here: the tested version is whatever package.json pins. Run `pnpm patches:sync` after editing.",
+  "@earendil-works/pi-coding-agent": [
+    "nix-highlighting",
+    {
+      "name": "coding-agent-scrollbar-markers",
+      "dir": "scrollbar-markers",
+      "patch": "coding-agent.patch.diff"
+    }
+  ],
+  "@earendil-works/pi-tui": [
+    "markdown-code-block",
+    {
+      "name": "tui-scrollbar-markers",
+      "dir": "scrollbar-markers",
+      "patch": "tui.patch.diff"
+    },
+    "disable-fullscreen-copy-on-select"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@aliou/pi-patches",
+  "private": true,
+  "type": "module",
+  "pi": {
+    "skills": [
+      "./skills/creating-patches"
+    ]
+  },
+  "scripts": {
+    "patches:sync": "node scripts/sync-patches.mjs",
+    "test:patches": "node scripts/run-patch-tests.mjs"
+  },
+  "dependencies": {
+    "@earendil-works/pi-ai": "0.84.1",
+    "@earendil-works/pi-coding-agent": "0.84.1",
+    "@earendil-works/pi-tui": "0.84.1"
+  }
+}
