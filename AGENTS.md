@@ -22,6 +22,11 @@ single `patch.diff`. In that case, list it in `manifest.json` as
 under each package that should receive one of its diffs. `name` is the label
 used in generated combined diffs.
 
+Different patch directories may touch the same package file when their hunks do
+not overlap. Keep each behavior scoped to its own patch directory; do not move a
+change into another patch directory just because both changes edit the same
+published `dist/**` file. `pnpm patches:sync` rejects overlapping hunks.
+
 ## Commands
 
 ```sh

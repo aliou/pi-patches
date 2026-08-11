@@ -18,7 +18,8 @@ Use this workflow inside the `pi-patches` repo.
 
 - Patch the published package output, usually `dist/**`.
 - Keep `patch.diff` applicable with `patch --batch --fuzz=0 -p1` from the package root.
-- Do not let two patches for the same package touch the same file; `pnpm patches:sync` rejects that.
+- Keep each behavior scoped to its own patch directory, even when two behaviors patch different hunks in the same package file.
+- Do not let two patches for the same package touch overlapping hunks; `pnpm patches:sync` rejects overlapping hunk ranges.
 
 ## Test rules
 
@@ -35,4 +36,3 @@ pnpm test:patches
 ```
 
 `combined/` is generated and ignored. Do not stage it.
-

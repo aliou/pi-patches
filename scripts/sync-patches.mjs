@@ -44,26 +44,46 @@ const pkg = JSON.parse(readFileSync(PKG_FILE, "utf8"));
 const packages = Object.entries(manifest).filter(([key]) => !key.startsWith("//"));
 
 /**
- * Files a unified diff touches, from its paired `--- a/x` / `+++ b/x` headers.
+ * Hunk ranges a unified diff touches, grouped by target file.
  *
- * Only a `+++` immediately preceded by a `---` is a header; payload lines can
- * legitimately start with `+++ ` (an added line whose text begins with `++ `).
- * Both sides are recorded so a rename conflicts with a patch that edits either
- * pathname, and `/dev/null` is ignored so two unrelated file deletions do not
- * look like a collision.
+ * Only a `+++` immediately preceded by a `---` is a file header; payload lines
+ * can legitimately start with `+++ `. Both sides are recorded so a rename still
+ * conflicts with a patch that edits either pathname, and `/dev/null` is ignored.
+ *
+ * Ranges use old-file coordinates because each patch diff is authored against
+ * the published package output. Pure insertions have length 0 in unified diff
+ * headers; treat them as a one-line point interval so two patches inserting at
+ * the same point conflict, while edits elsewhere in the same file can coexist.
  */
-function targetsOf(diff) {
+function hunkTargetsOf(diff) {
   const clean = (header) => header.slice(4).trim().split("\t")[0].replace(/^[ab]\//, "");
   const lines = diff.split("\n");
-  const targets = new Set();
+  const targets = new Map();
+  let currentTargets = [];
   for (let i = 0; i + 1 < lines.length; i++) {
-    if (!lines[i].startsWith("--- ") || !lines[i + 1].startsWith("+++ ")) continue;
-    for (const side of [clean(lines[i]), clean(lines[i + 1])]) {
-      if (side !== "/dev/null") targets.add(side);
+    if (lines[i].startsWith("--- ") && lines[i + 1].startsWith("+++ ")) {
+      currentTargets = [clean(lines[i]), clean(lines[i + 1])].filter((side) => side !== "/dev/null");
+      for (const target of currentTargets) {
+        if (!targets.has(target)) targets.set(target, []);
+      }
+      i++;
+      continue;
     }
-    i++;
+
+    const hunk = /^@@ -(\d+)(?:,(\d+))? \+\d+(?:,\d+)? @@/.exec(lines[i]);
+    if (!hunk || currentTargets.length === 0) continue;
+    const start = Number(hunk[1]);
+    const length = Number(hunk[2] ?? "1");
+    const end = length === 0 ? start : start + length - 1;
+    for (const target of currentTargets) {
+      targets.get(target).push({ start, end });
+    }
   }
-  return [...targets];
+  return targets;
+}
+
+function overlaps(a, b) {
+  return a.start <= b.end && b.start <= a.end;
 }
 
 /** Every patch dir on disk, so orphans (present but unlisted) are caught. */
@@ -127,12 +147,18 @@ for (const [pkgName, dirs] of packages) {
     dirsOnDisk.delete(entry.dir);
 
     const diff = readFileSync(file, "utf8");
-    for (const target of targetsOf(diff)) {
-      const owner = seenTargets.get(target);
-      if (owner) {
-        fail(`${pkgName}: ${entry.label} and ${owner} both patch ${target}; concatenated patches must touch distinct files`);
+    for (const [target, ranges] of hunkTargetsOf(diff)) {
+      const seenRanges = seenTargets.get(target) ?? [];
+      for (const range of ranges) {
+        const owner = seenRanges.find((seen) => overlaps(seen, range));
+        if (owner) {
+          fail(
+            `${pkgName}: ${entry.label} hunk ${target}:${range.start}-${range.end} overlaps ${owner.label} hunk ${target}:${owner.start}-${owner.end}`,
+          );
+        }
       }
-      seenTargets.set(target, entry.label);
+      seenRanges.push(...ranges.map((range) => ({ ...range, label: entry.label })));
+      seenTargets.set(target, seenRanges);
     }
     parts.push(`# ${entry.label}\n${diff.endsWith("\n") ? diff : `${diff}\n`}`);
   }
