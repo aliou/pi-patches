@@ -1,0 +1,50 @@
+--- a/dist/tui-alt-screen.js
++++ b/dist/tui-alt-screen.js
+@@ -624,6 +624,9 @@
+             this.updateSelectionFocus(point);
+         this.requestRender();
+     }
++    copyActiveSelectionToClipboard() {
++        return this.copySelectionToClipboard();
++    }
+     stopSelectionAutoScroll() {
+         if (this.selectionAutoScrollTimer) {
+             clearInterval(this.selectionAutoScrollTimer);
+@@ -664,7 +667,6 @@
+                 this.requestRender();
+                 return;
+             }
+-            this.copySelectionToClipboard();
+             this.requestRender();
+             return;
+         }
+@@ -730,14 +732,14 @@
+     copySelectionToClipboard() {
+         const selection = this.getSelectionBounds();
+         if (!selection)
+-            return;
++            return false;
+         let sourceLines = this.previousScreen;
+         if (selection.start.scrollView) {
+             if (!this.currentLayout)
+-                return;
++                return false;
+             const box = getScrollViewBox(this.currentLayout, selection.start.scrollView);
+             if (!box?.scrollContentLines)
+-                return;
++                return false;
+             sourceLines = box.scrollContentLines;
+         }
+         const lines = [];
+@@ -748,9 +750,10 @@
+         }
+         const text = lines.join("\n");
+         if (text.length === 0)
+-            return;
++            return false;
+         this.terminal.write(`\x1b]52;c;${Buffer.from(text).toString("base64")}\x07`);
+         this.flash("Copied!");
++        return true;
+     }
+     applySelectionHighlight(text) {
+         let result = "\x1b[7m";

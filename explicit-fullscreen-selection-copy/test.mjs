@@ -1,8 +1,8 @@
-// Guards the patch that disables fullscreen copy-on-select.
+// Guards the patch that makes fullscreen selection copy explicit.
 //
 // A completed mouse selection must keep selection state/rendering behavior but
-// must not emit an OSC 52 clipboard write. This fails on unpatched pi-tui,
-// where mouse release copies the selected text to the clipboard.
+// must not emit an OSC 52 clipboard write. Ctrl+X/message-copy can then copy
+// the still-active selection through copyActiveSelectionToClipboard().
 
 import { TuiAltScreen } from "@earendil-works/pi-tui/dist/tui-alt-screen.js";
 
@@ -29,5 +29,11 @@ tui.handleSelectionMouseEvent({ button: 0, release: true, x: 4, y: 0 });
 
 assert("mouse-release selection does not write OSC 52 clipboard data", writes.every((data) => !data.includes("\x1b]52;")));
 assert("completed selection remains active for highlighting", tui.getSelectionBounds()?.start.col === 1 && tui.getSelectionBounds()?.end.col === 4);
+
+assert("active selection copy reports success", tui.copyActiveSelectionToClipboard() === true);
+assert("active selection copy writes OSC 52 clipboard data", writes.some((data) => data.includes(`\x1b]52;c;${Buffer.from("bcde").toString("base64")}\x07`)));
+
+const emptyTui = new TuiAltScreen(terminal, false, undefined, { mouse: false });
+assert("active selection copy reports false without a selection", emptyTui.copyActiveSelectionToClipboard() === false);
 
 if (failed > 0) process.exit(1);
