@@ -6,11 +6,6 @@
       "name": "coding-agent-scrollbar-markers",
       "dir": "scrollbar-markers",
       "patch": "coding-agent.patch.diff"
-    },
-    {
-      "name": "coding-agent-explicit-fullscreen-selection-copy",
-      "dir": "explicit-fullscreen-selection-copy",
-      "patch": "coding-agent.patch.diff"
     }
   ],
   "@earendil-works/pi-tui": [
@@ -18,11 +13,6 @@
     {
       "name": "tui-scrollbar-markers",
       "dir": "scrollbar-markers",
-      "patch": "tui.patch.diff"
-    },
-    {
-      "name": "tui-explicit-fullscreen-selection-copy",
-      "dir": "explicit-fullscreen-selection-copy",
       "patch": "tui.patch.diff"
     }
   ]
