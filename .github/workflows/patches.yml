@@ -153,17 +153,20 @@ jobs:
           restore-keys: |
             upstream-npm-${{ runner.os }}-
 
-      - uses: actions/cache@v6
+      # Restore/save are split: `actions/cache` saves in a post step, which
+      # would run *after* the patch steps below modify `packages/*/dist` and
+      # cache the patched build. The next run would then restore an
+      # already-patched dist and fail with "previously applied patch".
+      - uses: actions/cache/restore@v6
         id: upstream-build-cache
         with:
           path: |
             upstream-pi/node_modules
             upstream-pi/packages/*/dist
             upstream-pi/packages/session-backends/*/dist
-          key: upstream-build-${{ runner.os }}-${{ steps.upstream.outputs.sha }}-${{ hashFiles('upstream-pi/package-lock.json') }}
+          key: upstream-build-v2-${{ runner.os }}-${{ steps.upstream.outputs.sha }}-${{ hashFiles('upstream-pi/package-lock.json') }}
           restore-keys: |
-            upstream-build-${{ runner.os }}-${{ steps.upstream.outputs.sha }}-
-            upstream-build-${{ runner.os }}-
+            upstream-build-v2-${{ runner.os }}-${{ steps.upstream.outputs.sha }}-
 
       - name: Generate combined patch files
         run: node scripts/sync-patches.mjs
@@ -174,6 +177,16 @@ jobs:
         run: |
           npm ci --prefer-offline
           npm run build
+
+      # Save the pristine build before any patch step can modify it.
+      - uses: actions/cache/save@v6
+        if: steps.upstream-build-cache.outputs.cache-hit != 'true'
+        with:
+          path: |
+            upstream-pi/node_modules
+            upstream-pi/packages/*/dist
+            upstream-pi/packages/session-backends/*/dist
+          key: upstream-build-v2-${{ runner.os }}-${{ steps.upstream.outputs.sha }}-${{ hashFiles('upstream-pi/package-lock.json') }}
 
       - name: Apply patches to upstream build
         run: |
