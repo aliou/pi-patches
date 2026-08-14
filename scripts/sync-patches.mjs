@@ -120,7 +120,23 @@ function normalizePatchEntry(pkgName, entry) {
 }
 
 function workspaceYaml(patched) {
-  const lines = ["packages: []", "", "allowBuilds:", "  '@google/genai': false", "  protobufjs: false", "", "patchedDependencies:"];
+  // `minimumReleaseAge: 0` disables pnpm's supply-chain age gate. In its
+  // default non-strict mode the gate never blocks anything, but pnpm still
+  // appends `minimumReleaseAgeExclude` entries to this file whenever a fresh
+  // release is installed — which would make `--check` (exact file compare)
+  // fail on every new pi version. This repo installs freshly published pi
+  // releases by design, so the gate is noise.
+  const lines = [
+    "packages: []",
+    "",
+    "minimumReleaseAge: 0",
+    "",
+    "allowBuilds:",
+    "  '@google/genai': false",
+    "  protobufjs: false",
+    "",
+    "patchedDependencies:",
+  ];
   for (const [key, value] of Object.entries(patched)) {
     lines.push(`  ${JSON.stringify(key)}: ${JSON.stringify(value)}`);
   }
