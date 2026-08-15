@@ -1,0 +1,24 @@
+--- a/dist/core/extensions/loader.js
++++ b/dist/core/extensions/loader.js
+@@ -356,7 +356,7 @@
+         }
+     }
+     const jiti = createJiti(import.meta.url, {
+-        moduleCache: false,
++        moduleCache: true,
+         // Bun uses modules embedded in the executable. Source TypeScript reuses the
+         // host-resolved modules and root tsconfig paths. Built Node uses dist aliases.
+         ...(isBunBinary
+--- a/dist/modes/interactive/interactive-mode.js
++++ b/dist/modes/interactive/interactive-mode.js
+@@ -4793,6 +4793,10 @@
+     // Command handlers
+     // =========================================================================
+     async handleReloadCommand() {
++        this.showWarning("/reload is disabled by the jiti-module-cache patch (moduleCache: true). Restart pi instead.");
++        return;
++    }
++    async handleReloadCommand_disabled() {
+         if (this.session.isStreaming) {
+             this.showWarning("Wait for the current response to finish before reloading.");
+             return;

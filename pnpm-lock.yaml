@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
-  '@earendil-works/pi-coding-agent@0.84.2': ad18e713c9c0ad8510562625b9b491465981ef6fe009304e71093b64aee177d0
+  '@earendil-works/pi-coding-agent@0.84.2': d9304489e95097fd8ae94d40bf8c6e3d58bf534579276c6cc66ca928ffabc846
   '@earendil-works/pi-tui@0.84.2': 37976a63d572b02a5402683ed0b1c71d51a39e55aaa3765a844f58183a1dc0a3
 
 importers:
@@ -17,7 +17,7 @@ importers:
         version: 0.84.2(ws@8.21.3)
       '@earendil-works/pi-coding-agent':
         specifier: 0.84.2
-        version: 0.84.2(patch_hash=ad18e713c9c0ad8510562625b9b491465981ef6fe009304e71093b64aee177d0)(ws@8.21.3)
+        version: 0.84.2(patch_hash=d9304489e95097fd8ae94d40bf8c6e3d58bf534579276c6cc66ca928ffabc846)(ws@8.21.3)
       '@earendil-works/pi-tui':
         specifier: 0.84.2
         version: 0.84.2(patch_hash=37976a63d572b02a5402683ed0b1c71d51a39e55aaa3765a844f58183a1dc0a3)
@@ -851,7 +851,7 @@ snapshots:
     dependencies:
       '@earendil-works/pi-protocol': 0.84.2
 
-  '@earendil-works/pi-coding-agent@0.84.2(patch_hash=ad18e713c9c0ad8510562625b9b491465981ef6fe009304e71093b64aee177d0)(ws@8.21.3)':
+  '@earendil-works/pi-coding-agent@0.84.2(patch_hash=d9304489e95097fd8ae94d40bf8c6e3d58bf534579276c6cc66ca928ffabc846)(ws@8.21.3)':
     dependencies:
       '@earendil-works/pi-agent-core': 0.84.2(ws@8.21.3)
       '@earendil-works/pi-ai': 0.84.2(ws@8.21.3)
