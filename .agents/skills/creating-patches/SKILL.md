@@ -10,7 +10,7 @@ Use this workflow inside the `pi-patches` repo.
 ## Patch shape
 
 - Create one directory per behavior, named without the package prefix.
-- Add exactly these files: `README.md`, `patch.diff`, `test.mjs`.
+- Add exactly these files: `README.md`, `patch.diff`, `patch.test.mjs`.
 - Add the directory to `manifest.json` under the patched package, in apply order.
 - Keep package versions in `package.json`; do not encode versions in directory names.
 
@@ -23,7 +23,7 @@ Use this workflow inside the `pi-patches` repo.
 
 ## Test rules
 
-- `test.mjs` must import the patched package by name from `node_modules`.
+- `patch.test.mjs` must be a Vitest test (`describe`/`it`/`expect` from `vitest`) that imports the patched package by name from `node_modules`.
 - Test the externally visible behavior, not private implementation details when possible.
 - The test should fail on the unpatched package.
 

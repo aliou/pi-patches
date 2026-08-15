@@ -14,7 +14,7 @@ Each ordinary patch directory contains:
 
 - `README.md` - what the patch changes and why.
 - `patch.diff` - unified diff against the package's published `dist/**` files.
-- `test.mjs` - Node test that imports the patched package and fails on unpatched behavior.
+- `patch.test.mjs` - Vitest test that imports the patched package and fails on unpatched behavior.
 
 A shared patch directory may contain package-specific diff files instead of a
 single `patch.diff`. In that case, list it in `manifest.json` as
@@ -37,7 +37,7 @@ pnpm test:patches
 
 `pnpm patches:sync` regenerates `pnpm-workspace.yaml` `patchedDependencies` and writes ignored files under `combined/` for pnpm. Run it after changing `manifest.json`, `package.json` versions, or any patch directory list.
 
-`pnpm install` applies the generated combined diffs. `pnpm test:patches` checks generated state first, then runs every patch test.
+`pnpm install` applies the generated combined diffs. `pnpm test:patches` checks generated state first, then runs the Vitest patch tests. Run a single patch's test with `pnpm vitest run <dir>`.
 
 ## Nix consumers
 

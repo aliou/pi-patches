@@ -39,7 +39,7 @@ top/bottom padding bars (`▀` / `▄`), with no surrounding blank lines:
 
 - `patch.diff` — unified diff applied to the installed package's
   `dist/components/markdown.js`.
-- `test.mjs` — imports the patched `Markdown` by package name
+- `patch.test.mjs` — imports the patched `Markdown` by package name
   (`@earendil-works/pi-tui/dist/components/markdown.js`) and asserts the new
   rendering. Fails on unpatched code, so it actually guards the patch.
 

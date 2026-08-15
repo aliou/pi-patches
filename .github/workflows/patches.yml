@@ -6,12 +6,11 @@ on:
     paths:
       - "*/README.md"
       - "*/patch.diff"
-      - "*/test.mjs"
+      - "*/patch.test.mjs"
       - "manifest.json"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
-      - "scripts/run-patch-tests.mjs"
       - "scripts/sync-patches.mjs"
       - "scripts/bump-pi-version.mjs"
       - ".github/workflows/patches.yml"
@@ -19,12 +18,11 @@ on:
     paths:
       - "*/README.md"
       - "*/patch.diff"
-      - "*/test.mjs"
+      - "*/patch.test.mjs"
       - "manifest.json"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
-      - "scripts/run-patch-tests.mjs"
       - "scripts/sync-patches.mjs"
       - "scripts/bump-pi-version.mjs"
       - ".github/workflows/patches.yml"
@@ -193,12 +191,16 @@ jobs:
           patch --directory upstream-pi/packages/coding-agent --forward --strip=1 < combined/pi-coding-agent.diff
           patch --directory upstream-pi/packages/tui --forward --strip=1 < combined/pi-tui.diff
 
+      - name: Install patch project
+        run: pnpm install --no-frozen-lockfile
+
       - name: Link patched upstream packages
         run: |
+          rm -rf node_modules/@earendil-works
           mkdir -p node_modules/@earendil-works
           ln -s ../../upstream-pi/packages/ai node_modules/@earendil-works/pi-ai
           ln -s ../../upstream-pi/packages/coding-agent node_modules/@earendil-works/pi-coding-agent
           ln -s ../../upstream-pi/packages/tui node_modules/@earendil-works/pi-tui
 
       - name: Run patch tests against upstream main
-        run: node scripts/run-patch-tests.mjs
+        run: pnpm test:patches

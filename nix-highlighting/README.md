@@ -30,7 +30,7 @@ After: those paths map to a sensible highlight.js language identifier:
 - `patch.diff` — unified diff against the installed package's
   `dist/modes/interactive/theme/theme.js`. Listed in `manifest.json` and
   concatenated into the generated diff pnpm applies.
-- `test.mjs` — imports the patched `getLanguageFromPath` by package name and
+- `patch.test.mjs` — imports the patched `getLanguageFromPath` by package name and
   asserts each new mapping. Fails on unpatched code, so it guards the patch.
 
 ## How it is applied & tested

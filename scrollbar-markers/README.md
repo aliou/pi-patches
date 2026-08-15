@@ -63,7 +63,7 @@ identity, custom entry id, and user-message text fallback.
 - `coding-agent.patch.diff` — unified diff against
   `@earendil-works/pi-coding-agent` file
   `dist/modes/interactive/interactive-mode.js`.
-- `test.mjs` — sweeps every scroll position of a transcript whose lines carry a
+- `patch.test.mjs` — sweeps every scroll position of a transcript whose lines carry a
   background reaching the scrollbar column, resolving the SGR state at each
   marker glyph. Asserts the marker is always painted, always keeps its color,
   takes the thumb background when over the thumb, and never inherits the
