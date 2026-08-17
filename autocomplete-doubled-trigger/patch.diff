@@ -1,0 +1,17 @@
+--- a/dist/components/editor.js
++++ b/dist/components/editor.js
+@@ -958,6 +958,14 @@
+                 if (textBeforeCursor.length === 1 || charBeforeSymbol === " " || charBeforeSymbol === "\t") {
+                     this.tryTriggerAutocomplete();
+                 }
++                else if (charBeforeSymbol === char) {
++                    // Doubled trigger char (e.g. "??"): re-check the boundary before the pair,
++                    // since the first occurrence may have been a no-op trigger (null suggestions).
++                    const charBeforePair = textBeforeCursor[textBeforeCursor.length - 3];
++                    if (textBeforeCursor.length === 2 || charBeforePair === " " || charBeforePair === "\t") {
++                        this.tryTriggerAutocomplete();
++                    }
++                }
+             }
+             // Also auto-trigger when typing letters in a slash command or symbol completion context
+             else if (/[a-zA-Z0-9.\-_]/.test(char)) {

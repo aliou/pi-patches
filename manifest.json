@@ -11,6 +11,7 @@
   ],
   "@earendil-works/pi-tui": [
     "markdown-code-block",
+    "autocomplete-doubled-trigger",
     {
       "name": "tui-scrollbar-markers",
       "dir": "scrollbar-markers",
