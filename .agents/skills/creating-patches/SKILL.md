@@ -17,9 +17,10 @@ Use this workflow inside the `pi-patches` repo.
 ## Patch diff rules
 
 - Patch the published package output, usually `dist/**`.
+- Author `patch.diff` against the pristine published package (the `npm pack` tarball of the pinned version), never against an already-patched tree. `pnpm patches:sync` combines patches by staging: it applies each patch in manifest order with GNU patch (offset search absorbs line drift; `--fuzz=0` forbids fuzzy matches), then regenerates `combined/` as one self-consistent diff in deterministic pure-Node output and self-verifies it by round-tripping through GNU patch.
 - Keep `patch.diff` applicable with `patch --batch --fuzz=0 -p1` from the package root.
 - Keep each behavior scoped to its own patch directory, even when two behaviors patch different hunks in the same package file.
-- Do not let two patches for the same package touch overlapping hunks; `pnpm patches:sync` rejects overlapping hunk ranges.
+- Do not let two patches for the same package touch overlapping hunks; `pnpm patches:sync` rejects overlapping hunk ranges (in pristine coordinates).
 
 ## Test rules
 

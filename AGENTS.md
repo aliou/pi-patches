@@ -2,6 +2,10 @@
 
 Patch set for Pi packages that are still needed outside upstream releases.
 
+## Policy
+
+None of these patches will be submitted upstream. Do not suggest upstreaming a patch as an alternative or next step; the patches exist by design as local carry.
+
 ## Structure
 
 - `manifest.json` - source of truth. Maps each patched package to the ordered patch directories that apply to it.
@@ -9,6 +13,7 @@ Patch set for Pi packages that are still needed outside upstream releases.
 - `<patch-name>/` - one patch directory, named by behavior only. Do not prefix names with the package; the manifest supplies the package.
 - `scripts/` - maintenance scripts.
 - `combined/` - generated pnpm patch files. Do not commit this directory.
+- `.cache/pristine/` - local cache of extracted pristine package tarballs (fetched via `npm pack` on first use; network required only when cold).
 
 Each ordinary patch directory contains:
 
@@ -35,7 +40,7 @@ pnpm install
 pnpm test:patches
 ```
 
-`pnpm patches:sync` regenerates `pnpm-workspace.yaml` `patchedDependencies` and writes ignored files under `combined/` for pnpm. Run it after changing `manifest.json`, `package.json` versions, or any patch directory list.
+`pnpm patches:sync` regenerates `pnpm-workspace.yaml` `patchedDependencies` and writes ignored files under `combined/` for pnpm. It combines patches by staging: extract the pristine package, apply every manifest patch in order with GNU patch (offset search absorbs upstream line drift), emit one deterministic combined diff (pure Node, byte-stable across platforms because `pnpm-lock.yaml` pins its hash), and self-verify by re-applying the combined diff to pristine with GNU patch. A patch whose context no longer matches fails sync with the patch's name — that is the rebase signal. Run it after changing `manifest.json`, `package.json` versions, or any patch directory list.
 
 `pnpm install` applies the generated combined diffs. `pnpm test:patches` checks generated state first, then runs the Vitest patch tests. Run a single patch's test with `pnpm vitest run <dir>`.
 
