@@ -10,7 +10,8 @@
     },
     "disable-share-command",
     "disable-export-command",
-    "export-public-api"
+    "export-public-api",
+    "tree-entry-timestamps"
   ],
   "@earendil-works/pi-tui": [
     "markdown-code-block",

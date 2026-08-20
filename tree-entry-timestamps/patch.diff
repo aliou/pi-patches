@@ -1,0 +1,43 @@
+--- a/dist/modes/interactive/components/tree-selector.js
++++ b/dist/modes/interactive/components/tree-selector.js
+@@ -598,7 +598,8 @@
+             const prefixPart = theme.fg("dim", prefix) + foldMarker + pathMarker;
+             const anchorCol = visibleWidth(prefixPart);
+             let gutter = cursor;
+-            let body = prefixPart + label + labelTimestamp + content;
++            const entryTimestamp = theme.fg("muted", `${this.formatEntryTimestamp(entry.timestamp)} `);
++            let body = prefixPart + entryTimestamp + label + labelTimestamp + content;
+             if (isSelected) {
+                 gutter = theme.bg("selectedBg", gutter);
+                 body = theme.bg("selectedBg", body);
+@@ -717,6 +718,30 @@
+         const year = date.getFullYear().toString().slice(-2);
+         return `${year}/${month}/${day} ${time}`;
+     }
++    formatEntryTimestamp(timestamp) {
++        const date = new Date(timestamp);
++        const now = new Date();
++        const pad = (n) => n.toString().padStart(2, "0");
++        const time = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
++        const sameDay = date.getFullYear() === now.getFullYear() &&
++            date.getMonth() === now.getMonth() &&
++            date.getDate() === now.getDate();
++        if (!sameDay) {
++            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${time}`;
++        }
++        const minutesAgo = Math.floor((now.getTime() - date.getTime()) / 60000);
++        let relative;
++        if (minutesAgo < 1) {
++            relative = "now";
++        }
++        else if (minutesAgo < 60) {
++            relative = `${minutesAgo}m ago`;
++        }
++        else {
++            relative = `${Math.floor(minutesAgo / 60)}h ago`;
++        }
++        return `${time} (${relative})`;
++    }
+     extractContent(content) {
+         return this.extractFullContent(content).slice(0, 200);
+     }
