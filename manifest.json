@@ -7,7 +7,8 @@
       "name": "coding-agent-scrollbar-markers",
       "dir": "scrollbar-markers",
       "patch": "coding-agent.patch.diff"
-    }
+    },
+    "disable-share-command"
   ],
   "@earendil-works/pi-tui": [
     "markdown-code-block",
