@@ -37,3 +37,35 @@ pnpm test:patches
 ```
 
 `combined/` is generated and ignored. Do not stage it.
+
+## Running the patched pi binary locally
+
+The fastest way to smoke-test patches against a real CLI is the `pi` binary in
+this repo's own `node_modules` — `pnpm install` applies the combined diffs, so
+it is the exact artifact CI tests:
+
+```sh
+pnpm install
+./node_modules/.bin/pi --version   # boots the patched CLI
+./node_modules/.bin/pi              # fully patched interactive session
+```
+
+Check the patch surface the same way: `./node_modules/.bin/pi --help` (removed
+flags/commands must not appear) and `node -e "import('./node_modules/@earendil-works/pi-coding-agent/dist/index.js').then(m => console.log(Object.keys(m)))"`
+for the public API.
+
+The Nix build (`pi-cli-patched` in the homelab flake) reads `manifest.json` and
+applies each patch with GNU patch on top of the `pi-cli` package. It points at
+`github:aliou/pi-patches`, so testing uncommitted local patches needs an
+override:
+
+```sh
+nix build ~/code/src/code.378labs.dev/homelab/pkgs#pi-cli-patched \
+  --override-input pi-patches ~/code/src/pi.dev/pi-patches
+./result/bin/pi --version
+```
+
+A source assertion like checking a removed statement's neighbor still exists,
+or a `--version` smoke run via `spawnSync`, belongs in `patch.test.mjs` when a
+patch deletes a code block — deleting one line too many in `main.js` once
+turned every startup into a `ReferenceError`.
