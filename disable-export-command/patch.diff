@@ -1,0 +1,69 @@
+--- a/dist/cli/args.js
++++ b/dist/cli/args.js
+@@ -114,9 +114,6 @@
+                 i++;
+             }
+         }
+-        else if (arg === "--export" && i + 1 < args.length) {
+-            result.export = args[++i];
+-        }
+         else if ((arg === "--extension" || arg === "-e") && i + 1 < args.length) {
+             result.extensions = result.extensions ?? [];
+             result.extensions.push(args[++i]);
+@@ -285,7 +282,6 @@
+   --use-theme <name[/name]>      Set the initial interactive theme for this run
+   --no-themes                    Disable theme discovery and loading
+   --no-context-files, -nc        Disable AGENTS.md and CLAUDE.md discovery and loading
+-  --export <file>                Export session file to HTML and exit
+   --list-models [search]         List available models (with optional fuzzy search)
+   --verbose                      Force verbose startup (overrides quietStartup setting)
+   --tui-mode <mode>              TUI mode: regular (default) or fullscreen
+@@ -352,9 +348,6 @@
+   # Disable one tool while keeping the rest available
+   ${APP_NAME} --exclude-tools ask_question
+ 
+-  # Export a session file to HTML
+-  ${APP_NAME} --export ~/${CONFIG_DIR_NAME}/agent/sessions/--path--/session.jsonl
+-  ${APP_NAME} --export session.jsonl output.html
+ 
+ ${chalk.bold("Environment Variables:")}
+   ANTHROPIC_AUTH_TOKEN             - Anthropic bearer auth token
+--- a/dist/core/slash-commands.js
++++ b/dist/core/slash-commands.js
+@@ -6 +5,0 @@
+-    { name: "export", description: "Export session (HTML default, or specify path: .html/.jsonl)" },
+--- a/dist/main.js
++++ b/dist/main.js
+@@ -486,20 +486,6 @@
+         console.log(VERSION);
+         process.exit(0);
+     }
+-    if (parsed.export) {
+-        let result;
+-        try {
+-            const outputPath = parsed.messages.length > 0 ? parsed.messages[0] : undefined;
+-            result = await exportFromFile(parsed.export, outputPath);
+-        }
+-        catch (error) {
+-            const message = error instanceof Error ? error.message : "Failed to export session";
+-            console.error(chalk.red(`Error: ${message}`));
+-            process.exit(1);
+-        }
+-        console.log(`Exported to: ${result}`);
+-        process.exit(0);
+-    }
+     let appMode = resolveAppMode(parsed, process.stdin.isTTY, process.stdout.isTTY);
+     const shouldTakeOverStdout = appMode !== "interactive" && !isPlainRuntimeMetadataCommand(parsed);
+     if (shouldTakeOverStdout) {
+--- a/dist/modes/interactive/interactive-mode.js
++++ b/dist/modes/interactive/interactive-mode.js
+@@ -2347,9 +2347,4 @@
+                 return;
+             }
+-            if (text === "/export" || text.startsWith("/export ")) {
+-                await this.handleExportCommand(text);
+-                this.editor.setText("");
+-                return;
+-            }
+             if (text === "/import" || text.startsWith("/import ")) {
+                 await this.handleImportCommand(text);
