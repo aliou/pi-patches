@@ -69,6 +69,9 @@ jobs:
       - name: Generate combined patch files
         run: node scripts/sync-patches.mjs
 
+      - name: Check patch hunks are rebased
+        run: pnpm patches:check-offsets
+
       - name: Install patch project
         run: pnpm install --frozen-lockfile
 
@@ -109,6 +112,9 @@ jobs:
 
       - name: Generate combined patch files
         run: node scripts/sync-patches.mjs
+
+      - name: Check patch hunks are rebased
+        run: pnpm patches:check-offsets
 
       - name: Install patch project at bumped version
         run: pnpm install --no-frozen-lockfile
@@ -169,6 +175,9 @@ jobs:
       - name: Generate combined patch files
         run: node scripts/sync-patches.mjs
 
+      - name: Check patch hunks are rebased
+        run: pnpm patches:check-offsets
+
       - name: Build upstream Pi main
         if: steps.upstream-build-cache.outputs.cache-hit != 'true'
         working-directory: upstream-pi
@@ -188,8 +197,8 @@ jobs:
 
       - name: Apply patches to upstream build
         run: |
-          patch --directory upstream-pi/packages/coding-agent --forward --strip=1 < combined/pi-coding-agent.diff
-          patch --directory upstream-pi/packages/tui --forward --strip=1 < combined/pi-tui.diff
+          node scripts/apply-patch-strict.mjs upstream-pi/packages/coding-agent combined/pi-coding-agent.diff
+          node scripts/apply-patch-strict.mjs upstream-pi/packages/tui combined/pi-tui.diff
 
       - name: Install patch project
         run: pnpm install --no-frozen-lockfile

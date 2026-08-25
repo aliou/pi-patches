@@ -9,6 +9,7 @@
   },
   "scripts": {
     "patches:sync": "node scripts/sync-patches.mjs",
+    "patches:check-offsets": "node scripts/check-patch-offsets.mjs",
     "test:patches": "node scripts/sync-patches.mjs --check && vitest run"
   },
   "dependencies": {
