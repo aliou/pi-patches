@@ -3,13 +3,13 @@
   "@earendil-works/pi-coding-agent": [
     "jiti-module-cache",
     "nix-highlighting",
+    "disable-share-command",
+    "disable-export-command",
     {
       "name": "coding-agent-scrollbar-markers",
       "dir": "scrollbar-markers",
       "patch": "coding-agent.patch.diff"
     },
-    "disable-share-command",
-    "disable-export-command",
     "export-public-api",
     "tree-entry-timestamps"
   ],

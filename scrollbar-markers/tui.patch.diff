@@ -1,3 +1,33 @@
+--- a/dist/components/scroll-view.js
++++ b/dist/components/scroll-view.js
+@@ -6,6 +6,8 @@
+     primary;
+     overscroll;
+     scrollbarStyle;
++    scrollbarMarkerStyles;
++    scrollbarMarkers;
+     currentScrollbar;
+     scrollbarHideDelayMs;
+     currentScrollTop = 0;
+@@ -30,6 +32,8 @@
+         this.overscroll = options.overscroll ?? "chain";
+         this.currentScrollbar = options.scrollbar ?? "hidden";
+         this.scrollbarStyle = options.scrollbarStyle ?? ((text) => `\x1b[100m${text}\x1b[49m`);
++        this.scrollbarMarkerStyles = options.scrollbarMarkerStyles ?? {};
++        this.scrollbarMarkers = options.scrollbarMarkers;
+         this.scrollbarHideDelayMs = Math.max(0, Math.floor(options.scrollbarHideDelayMs ?? 1000));
+     }
+     get scrollTop() {
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -29,6 +29,7 @@
+ // Input buffering for batch splitting
+ export { StdinBuffer } from "./stdin-buffer.js";
+ // Terminal interface and implementations
++export { LAYOUT_NODE } from "./layout-node.js";
+ export { ProcessTerminal } from "./terminal.js";
+ // Terminal colors
+ export { parseOsc11BackgroundColor, parseTerminalColorSchemeReport, } from "./terminal-colors.js";
 --- a/dist/layout.js
 +++ b/dist/layout.js
 @@ -178,6 +178,110 @@
@@ -145,33 +175,3 @@
      }
  }
  function paintBox(box, screen, totalWidth) {
---- a/dist/index.js
-+++ b/dist/index.js
-@@ -29,6 +29,7 @@
- // Input buffering for batch splitting
- export { StdinBuffer } from "./stdin-buffer.js";
- // Terminal interface and implementations
-+export { LAYOUT_NODE } from "./layout-node.js";
- export { ProcessTerminal } from "./terminal.js";
- // Terminal colors
- export { parseOsc11BackgroundColor, parseTerminalColorSchemeReport, } from "./terminal-colors.js";
---- a/dist/components/scroll-view.js
-+++ b/dist/components/scroll-view.js
-@@ -6,6 +6,8 @@
-     primary;
-     overscroll;
-     scrollbarStyle;
-+    scrollbarMarkerStyles;
-+    scrollbarMarkers;
-     currentScrollbar;
-     scrollbarHideDelayMs;
-     currentScrollTop = 0;
-@@ -29,6 +31,8 @@
-         this.overscroll = options.overscroll ?? "chain";
-         this.currentScrollbar = options.scrollbar ?? "hidden";
-         this.scrollbarStyle = options.scrollbarStyle ?? ((text) => `\x1b[100m${text}\x1b[49m`);
-+        this.scrollbarMarkerStyles = options.scrollbarMarkerStyles ?? {};
-+        this.scrollbarMarkers = options.scrollbarMarkers;
-         this.scrollbarHideDelayMs = Math.max(0, Math.floor(options.scrollbarHideDelayMs ?? 1000));
-     }
-     get scrollTop() {

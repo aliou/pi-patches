@@ -1,20 +1,16 @@
+--- a/dist/cli/args.js
++++ b/dist/cli/args.js
+@@ -426 +425,0 @@
+-  PI_SHARE_VIEWER_URL              - Base URL for /share command (default: https://pi.dev/session/)
+--- a/dist/core/slash-commands.js
++++ b/dist/core/slash-commands.js
+@@ -10 +9,0 @@
+-    { name: "share", description: "Share session as a secret GitHub gist" },
 --- a/dist/modes/interactive/interactive-mode.js
 +++ b/dist/modes/interactive/interactive-mode.js
-@@ -2357,9 +2357,4 @@
-                 return;
-             }
+@@ -2404,5 +2404,0 @@
 -            if (text === "/share") {
 -                await this.handleShareCommand();
 -                this.editor.setText("");
 -                return;
 -            }
-             if (text === "/copy") {
-                 await this.handleCopyCommand();
---- a/dist/core/slash-commands.js
-+++ b/dist/core/slash-commands.js
-@@ -8 +7,0 @@
--    { name: "share", description: "Share session as a secret GitHub gist" },
---- a/dist/cli/args.js
-+++ b/dist/cli/args.js
-@@ -407 +406,0 @@
--  PI_SHARE_VIEWER_URL              - Base URL for /share command (default: https://pi.dev/session/)

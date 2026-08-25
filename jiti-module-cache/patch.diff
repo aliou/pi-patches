@@ -1,17 +1,17 @@
 --- a/dist/core/extensions/loader.js
 +++ b/dist/core/extensions/loader.js
-@@ -356,7 +356,7 @@
+@@ -415,7 +415,7 @@
          }
      }
      const jiti = createJiti(import.meta.url, {
 -        moduleCache: false,
 +        moduleCache: true,
-         // Bun uses modules embedded in the executable. Source TypeScript reuses the
-         // host-resolved modules and root tsconfig paths. Built Node uses dist aliases.
-         ...(isBunBinary
+         // Compiled binaries and the bundled Node distribution use embedded modules.
+         // Source TypeScript reuses host modules and root tsconfig paths. Unbundled
+         // Node builds use dist aliases.
 --- a/dist/modes/interactive/interactive-mode.js
 +++ b/dist/modes/interactive/interactive-mode.js
-@@ -4793,6 +4793,10 @@
+@@ -4940,6 +4940,10 @@
      // Command handlers
      // =========================================================================
      async handleReloadCommand() {
