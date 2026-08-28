@@ -8,6 +8,13 @@ Adds the HTML export pipeline to the package's public index:
   `exportFromFile`, and the `ExportOptions` / `ToolHtmlRenderer` types from
   `core/export-html`.
 
+  The lines insert after `core/messages` / `core/event-bus`, not in alphabetical
+  order. Placement is deliberate: the surrounding context lines must stay
+  byte-identical between the pinned release and upstream main so the upstream
+  canary can apply the hunk (adjacent `core/extensions` lines churn upstream,
+  e.g. new event types). Keep the insertion anchored to stable neighbors when
+  rebasing.
+
 ## Why
 
 `/export` (via `AgentSession.exportToHtml`) and `--export` (via `exportFromFile`)
