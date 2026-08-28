@@ -1,6 +1,12 @@
 #!/usr/bin/env node
-// Apply a patch and fail if GNU patch reports line offsets or fuzz.
+// Apply a patch and fail if GNU patch rejects hunks or applies with fuzz.
 // Usage: node scripts/apply-patch-strict.mjs <package-dir> <patch-file>
+//
+// Line-number offsets are tolerated: this script applies patches built from the
+// pinned release to a moving upstream tree, so hunks landing a few lines away
+// from their stated position are the normal between-release state. What must
+// never pass is a rejected hunk (context no longer matches) or a fuzzy match
+// (--fuzz=0 already forbids it; the output scan is a belt-and-suspenders check).
 
 import { spawnSync } from "node:child_process";
 import path from "node:path";
@@ -33,8 +39,8 @@ if (result.status !== 0) {
 }
 
 const output = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
-if (/\b(offset|fuzz)\b/i.test(output)) {
-	console.error(`error: GNU patch applied ${patchFileArg} with line offsets or fuzz; rebase the patch diffs`);
+if (/\bfuzz\b/i.test(output)) {
+	console.error(`error: GNU patch applied ${patchFileArg} with fuzz; rebase the patch diffs`);
 	process.exit(1);
 }
 
