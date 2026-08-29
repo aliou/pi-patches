@@ -1,6 +1,6 @@
 --- a/dist/cli/args.js
 +++ b/dist/cli/args.js
-@@ -129,9 +129,6 @@
+@@ -129,9 +129,6 @@ export function parseArgs(args) {
                  i++;
              }
          }
@@ -10,7 +10,7 @@
          else if ((arg === "--extension" || arg === "-e") && i + 1 < args.length) {
              result.extensions = result.extensions ?? [];
              result.extensions.push(args[++i]);
-@@ -300,7 +297,6 @@
+@@ -300,7 +297,6 @@ ${chalk.bold("Options:")}
    --use-theme <name[/name]>      Set the initial interactive theme for this run
    --no-themes                    Disable theme discovery and loading
    --no-context-files, -nc        Disable AGENTS.md and CLAUDE.md discovery and loading
@@ -18,7 +18,7 @@
    --list-models [search]         List available models (with optional fuzzy search)
    --verbose                      Force verbose startup (overrides quietStartup setting)
    --tui-mode <mode>              TUI mode: regular (default) or fullscreen
-@@ -371,9 +367,6 @@
+@@ -371,9 +367,6 @@ ${chalk.bold("Examples:")}
    # Disable one tool while keeping the rest available
    ${APP_NAME} --exclude-tools ask_question
  
@@ -34,7 +34,7 @@
 -    { name: "export", description: "Export session (HTML default, or specify path: .html/.jsonl)" },
 --- a/dist/main.js
 +++ b/dist/main.js
-@@ -482,20 +482,6 @@
+@@ -483,20 +483,6 @@ export async function main(args, options
          console.log(VERSION);
          process.exit(0);
      }
@@ -57,7 +57,7 @@
      if (shouldTakeOverStdout) {
 --- a/dist/modes/interactive/interactive-mode.js
 +++ b/dist/modes/interactive/interactive-mode.js
-@@ -2394,5 +2394,0 @@
+@@ -2405,5 +2405,0 @@
 -            if (text === "/export" || text.startsWith("/export ")) {
 -                await this.handleExportCommand(text);
 -                this.editor.setText("");

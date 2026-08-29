@@ -1,6 +1,6 @@
 --- a/dist/modes/interactive/interactive-mode.js
 +++ b/dist/modes/interactive/interactive-mode.js
-@@ -569,6 +569,105 @@
+@@ -572,6 +572,105 @@ export class InteractiveMode {
          }
          this.chatContainer.addChild(new DynamicBorder());
      }
@@ -106,7 +106,7 @@
      mountInteractiveTui(tui, components) {
          for (const component of components)
              tui.addChild(component);
-@@ -663,7 +762,16 @@
+@@ -667,7 +766,16 @@ export class InteractiveMode {
              overscroll: "chain",
              scrollbar: this.settingsManager.getFullscreenScrollbar(),
              scrollbarStyle: (text) => theme.bg("scrollbarThumb", text),
