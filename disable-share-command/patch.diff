@@ -1,7 +1,6 @@
 --- a/dist/cli/args.js
 +++ b/dist/cli/args.js
-@@ -425,7 +425,6 @@
-   PI_SERVER_ID                     - Logical experimental server ID (overridden by --server-id)
+@@ -424,5 +423,4 @@
    PI_OFFLINE                       - Disable startup network operations when set to 1/true/yes
    PI_TELEMETRY                     - Override install telemetry when set to 1/true/yes or 0/false/no
 -  PI_SHARE_VIEWER_URL              - Base URL for /share command (default: https://pi.dev/session/)

@@ -8,5 +8,5 @@ allowBuilds:
   protobufjs: false
 
 patchedDependencies:
-  "@earendil-works/pi-coding-agent@0.85.0": "combined/pi-coding-agent.diff"
-  "@earendil-works/pi-tui@0.85.0": "combined/pi-tui.diff"
+  "@earendil-works/pi-coding-agent@0.85.1": "combined/pi-coding-agent.diff"
+  "@earendil-works/pi-tui@0.85.1": "combined/pi-tui.diff"
