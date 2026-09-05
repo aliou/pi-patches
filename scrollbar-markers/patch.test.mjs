@@ -49,7 +49,7 @@ describe("scrollbar markers at every scroll position", () => {
     follow: "end",
     primary: true,
     scrollbar: "always",
-    scrollbarStyle: (text) => `\x1b[48;${THUMB_BG}m${text}\x1b[49m`,
+    scrollbarThumbStyle: (text) => `\x1b[48;${THUMB_BG}m${text}\x1b[49m`,
     scrollbarMarkerStyles: {
       label: () => `\x1b[49m\x1b[38;${LABEL_FG}m▄\x1b[39m`,
       user: () => `\x1b[49m\x1b[38;${USER_FG}m▄\x1b[39m`,
@@ -140,7 +140,7 @@ describe("49 reset handling over the thumb", () => {
       follow: "end",
       primary: true,
       scrollbar: "always",
-      scrollbarStyle: (text) => `\x1b[48;${THUMB_BG}m${text}\x1b[49m`,
+      scrollbarThumbStyle: (text) => `\x1b[48;${THUMB_BG}m${text}\x1b[49m`,
       scrollbarMarkerStyles: { label: () => markerStyle },
     });
     const viewRoot = new VStack([
@@ -173,7 +173,7 @@ it("paints no markers without a provider", () => {
     follow: "end",
     primary: true,
     scrollbar: "always",
-    scrollbarStyle: (text) => `\x1b[48;${THUMB_BG}m${text}\x1b[49m`,
+    scrollbarThumbStyle: (text) => `\x1b[48;${THUMB_BG}m${text}\x1b[49m`,
   });
   const plainRoot = new VStack([{ component: plain, basis: 0, grow: 1, shrink: 1, minSize: 1 }]);
   renderLayoutFrame(plainRoot, 40, 24, () => {});

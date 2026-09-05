@@ -1,6 +1,6 @@
 --- a/dist/modes/interactive/interactive-mode.js
 +++ b/dist/modes/interactive/interactive-mode.js
-@@ -572,6 +572,105 @@ export class InteractiveMode {
+@@ -528,6 +528,105 @@
          }
          this.chatContainer.addChild(new DynamicBorder());
      }
@@ -106,20 +106,19 @@
      mountInteractiveTui(tui, components) {
          for (const component of components)
              tui.addChild(component);
-@@ -667,7 +766,16 @@ export class InteractiveMode {
-             overscroll: "chain",
-             scrollbar: this.settingsManager.getFullscreenScrollbar(),
-             scrollbarStyle: (text) => theme.bg("scrollbarThumb", text),
-+            // Labels are half-block squares (a terminal cell is ~2x taller than
-+            // wide, so a half block is visually square) in the warning color the
-+            // session tree already uses for labels.
-+            scrollbarMarkerStyles: {
-+                // \x1b[49m clears any bg the underlying cell had (e.g. user message
-+                // background) so the half-block's top half stays transparent.
-+                label: () => `\x1b[49m${theme.fg("warning", "▄")}`,
-+            },
+@@ -630,6 +729,15 @@
+             scrollbarThumbStyle: (text) => theme.fg("scrollbarThumb", text),
          });
+         this.transcriptScrollView = viewport.transcript;
++        // Labels are half-block squares (a terminal cell is ~2x taller than
++        // wide, so a half block is visually square) in the warning color the
++        // session tree already uses for labels.
++        this.transcriptScrollView.scrollbarMarkerStyles = {
++            // \x1b[49m clears any bg the underlying cell had (e.g. user message
++            // background) so the half-block's top half stays transparent.
++            label: () => `\x1b[49m${theme.fg("warning", "▄")}`,
++        };
 +        this.transcriptScrollView.scrollbarMarkers = () => this.getTranscriptMarkers();
-         const dock = new TuiLayouts.VStack([
-             { component: this.pendingMessagesContainer, shrink: 1, minSize: 0 },
-             { component: this.statusContainer, shrink: 1, minSize: 0 },
+         this.fullscreenLayoutRoot = viewport.root;
+         this.mountInteractiveTui(this.renderer, [
+             this.documentContainer,

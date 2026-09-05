@@ -463,6 +463,7 @@ function workspaceYaml(patched) {
 		"",
 		"allowBuilds:",
 		"  '@google/genai': false",
+		"  esbuild: true",
 		"  protobufjs: false",
 		"",
 		"patchedDependencies:",

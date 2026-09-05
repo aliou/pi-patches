@@ -36,7 +36,7 @@ reach the scrollbar column, and those must not leak into a marker:
   marker shows its color in the glyph half and the thumb color in the other,
   so the thumb stays readable underneath.
 
-The thumb background is read from `scrollbarStyle(" ")` rather than from the
+The thumb background is read from `scrollbarThumbStyle(" ")` rather than from the
 row, because a style closes the background it opens and the row cannot be told
 apart from a message background.
 
@@ -92,7 +92,12 @@ Run: `pnpm -C patches install && pnpm test:patches`.
 
 ## Testing against a new Pi release
 
-Authored and verified against 0.84.1. The `Patches` workflow runs a nightly job
+Authored against 0.84.1 and verified against 0.85.0. (0.85.0 split the single
+`scrollbarStyle` ScrollView option into `scrollbarTrackStyle`/
+`scrollbarThumbStyle` and builds the fullscreen transcript through
+`createChatViewport`, so the marker styles and provider are assigned to the
+`transcriptScrollView` fields after construction instead of being passed as
+constructor options.) The `Patches` workflow runs a nightly job
 that bumps `package.json` to the latest published Pi release (via
 `scripts/bump-pi-version.mjs`), reinstalls, and re-runs this test. If the patch
 no longer applies, `pnpm install` fails and the job goes red — rebase

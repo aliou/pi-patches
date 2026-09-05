@@ -1,18 +1,18 @@
 --- a/dist/components/scroll-view.js
 +++ b/dist/components/scroll-view.js
-@@ -6,6 +6,8 @@
-     primary;
+@@ -7,6 +7,8 @@
      overscroll;
-     scrollbarStyle;
+     scrollbarTrackStyle;
+     scrollbarThumbStyle;
 +    scrollbarMarkerStyles;
 +    scrollbarMarkers;
      currentScrollbar;
      scrollbarHideDelayMs;
      currentScrollTop = 0;
-@@ -30,6 +32,8 @@
-         this.overscroll = options.overscroll ?? "chain";
+@@ -32,6 +34,8 @@
          this.currentScrollbar = options.scrollbar ?? "hidden";
-         this.scrollbarStyle = options.scrollbarStyle ?? ((text) => `\x1b[100m${text}\x1b[49m`);
+         this.scrollbarTrackStyle = options.scrollbarTrackStyle ?? ((text) => `\x1b[90m${text}\x1b[39m`);
+         this.scrollbarThumbStyle = options.scrollbarThumbStyle ?? ((text) => `\x1b[37m${text}\x1b[39m`);
 +        this.scrollbarMarkerStyles = options.scrollbarMarkerStyles ?? {};
 +        this.scrollbarMarkers = options.scrollbarMarkers;
          this.scrollbarHideDelayMs = Math.max(0, Math.floor(options.scrollbarHideDelayMs ?? 1000));
@@ -20,7 +20,7 @@
      get scrollTop() {
 --- a/dist/index.js
 +++ b/dist/index.js
-@@ -29,6 +29,7 @@
+@@ -30,6 +30,7 @@
  // Input buffering for batch splitting
  export { StdinBuffer } from "./stdin-buffer.js";
  // Terminal interface and implementations
@@ -30,16 +30,16 @@
  export { parseOsc11BackgroundColor, parseTerminalColorSchemeReport, } from "./terminal-colors.js";
 --- a/dist/layout.js
 +++ b/dist/layout.js
-@@ -178,6 +178,110 @@
-     const beforePadding = " ".repeat(Math.max(0, start - visibleWidth(before)));
-     return `${before}${beforePadding}${targetPrefix}${style(targetText)}${after}`;
+@@ -180,6 +180,110 @@
+     const targetStyle = `\x1b[0m\x1b]8;;\x07${preserveTargetBackground ? getActiveBackgroundAnsi(targetPrefix) : ""}`;
+     return `${before}${beforePadding}${targetStyle}${cellPaddingBefore}${replacement}${cellPaddingAfter}${after}`;
  }
 +const SGR_SEQUENCE_REGEX = /\x1b\[([0-9;]*)m/g;
 +const BG_CODE_REGEX = /^(?:4[0-7]|10[0-7])$/;
 +/**
 + * Extract the background SGR parameters a styled string paints with (e.g.
 + * "48;2;64;64;64"). Resets are ignored: callers pass a self-contained style
-+ * result such as `scrollbarStyle(" ")`, which sets a background and then
++ * result such as `scrollbarThumbStyle(" ")`, which sets a background and then
 + * closes it again, and the color it opened is the one the cell displays.
 + */
 +function extractBackgroundSgr(styled) {
@@ -97,7 +97,7 @@
 +    });
 +}
 +/**
-+ * Like styleScrollbarCell, but keeps the cell's existing character and only
++ * Like replaceScrollbarCell, but keeps the cell's existing character and only
 + * applies the style (used for markers, which overlay the track/thumb instead
 + * of replacing it).
 + *
@@ -138,26 +138,19 @@
 +    const beforePadding = " ".repeat(Math.max(0, start - visibleWidth(before)));
 +    return `${before}${beforePadding}${targetPrefix}${body}${after}`;
 +}
- export function getScrollbarGeometry(box) {
-     if (!box.scrollView?.isScrollbarVisible || box.rect.width <= 0 || box.rect.height <= 0)
+ export function getScrollbarGeometry(box, includeHiddenAuto = false) {
+     if (!box.scrollView || box.rect.width <= 0 || box.rect.height <= 0)
          return undefined;
-@@ -204,11 +308,32 @@
-     const geometry = getScrollbarGeometry(box);
-     if (!geometry || !box.scrollView)
-         return;
+@@ -219,6 +323,27 @@
+             : box.scrollView.scrollbarTrackStyle("│");
+         screen[row] = replaceScrollbarCell(screen[row] ?? "", geometry.column, totalWidth, replacement, box.scrollView.scrollbar !== "always");
+     }
 +    const scrollView = box.scrollView;
-     for (let offset = 0; offset < geometry.thumbHeight; offset++) {
-         const row = geometry.thumbTop + offset;
-         if (row < box.clip.y || row >= box.clip.y + box.clip.height || row < 0 || row >= screen.length)
-             continue;
--        screen[row] = styleScrollbarCell(screen[row] ?? "", geometry.column, totalWidth, box.scrollView.scrollbarStyle);
-+        screen[row] = styleScrollbarCell(screen[row] ?? "", geometry.column, totalWidth, scrollView.scrollbarStyle);
-+    }
 +    if (scrollView.scrollbarMarkers) {
 +        const markers = scrollView.scrollbarMarkers();
 +        // Derived from the style rather than the painted row so a message
 +        // background reaching the scrollbar column cannot be mistaken for the thumb.
-+        const thumbBg = markers.length > 0 ? extractBackgroundSgr(scrollView.scrollbarStyle(" ")) : undefined;
++        const thumbBg = markers.length > 0 ? extractBackgroundSgr(scrollView.scrollbarThumbStyle(" ")) : undefined;
 +        const thumbBottom = geometry.thumbTop + geometry.thumbHeight;
 +        for (const marker of markers) {
 +            if (!Number.isFinite(marker.position))
@@ -168,10 +161,11 @@
 +                continue;
 +            // Markers win over the thumb (browser search-highlight UX), and keep
 +            // the underlying cell's character so the gutter texture stays intact.
-+            const style = scrollView.scrollbarMarkerStyles[marker.kind] ?? scrollView.scrollbarStyle;
++            const style = scrollView.scrollbarMarkerStyles[marker.kind] ?? scrollView.scrollbarThumbStyle;
 +            const onThumb = row >= geometry.thumbTop && row < thumbBottom;
 +            screen[row] = restyleScrollbarCell(screen[row] ?? "", geometry.column, totalWidth, style, onThumb ? thumbBg : undefined);
 +        }
-     }
++    }
  }
  function paintBox(box, screen, totalWidth) {
+     if (box.lines) {
