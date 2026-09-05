@@ -5,21 +5,11 @@
     "nix-highlighting",
     "disable-share-command",
     "disable-export-command",
-    {
-      "name": "coding-agent-scrollbar-markers",
-      "dir": "scrollbar-markers",
-      "patch": "coding-agent.patch.diff"
-    },
     "export-public-api",
     "tree-entry-timestamps"
   ],
   "@earendil-works/pi-tui": [
     "markdown-code-block",
-    "autocomplete-doubled-trigger",
-    {
-      "name": "tui-scrollbar-markers",
-      "dir": "scrollbar-markers",
-      "patch": "tui.patch.diff"
-    }
+    "autocomplete-doubled-trigger"
   ]
 }
