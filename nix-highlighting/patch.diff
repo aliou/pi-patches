@@ -1,6 +1,6 @@
 --- a/dist/modes/interactive/theme/theme.js
 +++ b/dist/modes/interactive/theme/theme.js
-@@ -965,6 +965,17 @@
+@@ -864,6 +864,17 @@
      if (!ext)
          return undefined;
      const extToLang = {

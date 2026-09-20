@@ -1,17 +1,17 @@
 --- a/dist/core/extensions/loader.js
 +++ b/dist/core/extensions/loader.js
-@@ -415,7 +415,7 @@ async function loadExtensionModule(exten
-         }
-     }
-     const jiti = createJiti(import.meta.url, {
+@@ -408,7 +408,7 @@
+             ? { virtualModules: await getVirtualModules(), tsconfigPaths: true }
+             : { alias: getAliases() };
+     const jiti = createJitiImpl(import.meta.url, {
 -        moduleCache: false,
 +        moduleCache: true,
-         // Compiled binaries and the bundled Node distribution use embedded modules.
-         // Source TypeScript reuses host modules and root tsconfig paths. Unbundled
-         // Node builds use dist aliases.
+         ...resolutionOptions,
+     });
+     const module = await jiti.import(extensionPath, { default: true });
 --- a/dist/modes/interactive/interactive-mode.js
 +++ b/dist/modes/interactive/interactive-mode.js
-@@ -4957,6 +4957,10 @@ export class InteractiveMode {
+@@ -5088,6 +5088,10 @@
      // Command handlers
      // =========================================================================
      async handleReloadCommand() {

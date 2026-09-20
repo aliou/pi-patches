@@ -9,7 +9,6 @@
     "tree-entry-timestamps"
   ],
   "@earendil-works/pi-tui": [
-    "markdown-code-block",
-    "autocomplete-doubled-trigger"
+    "markdown-code-block"
   ]
 }

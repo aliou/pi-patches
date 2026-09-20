@@ -1,6 +1,6 @@
 --- a/dist/modes/interactive/components/tree-selector.js
 +++ b/dist/modes/interactive/components/tree-selector.js
-@@ -598,7 +598,8 @@
+@@ -600,7 +600,8 @@
              const prefixPart = theme.fg("dim", prefix) + foldMarker + pathMarker;
              const anchorCol = visibleWidth(prefixPart);
              let gutter = cursor;
@@ -10,7 +10,7 @@
              if (isSelected) {
                  gutter = theme.bg("selectedBg", gutter);
                  body = theme.bg("selectedBg", body);
-@@ -717,6 +718,30 @@
+@@ -719,6 +720,30 @@
          const year = date.getFullYear().toString().slice(-2);
          return `${year}/${month}/${day} ${time}`;
      }

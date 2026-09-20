@@ -1,6 +1,6 @@
 --- a/dist/cli/args.js
 +++ b/dist/cli/args.js
-@@ -424,5 +423,4 @@
+@@ -425,5 +424,4 @@
    PI_OFFLINE                       - Disable startup network operations when set to 1/true/yes
    PI_TELEMETRY                     - Override install telemetry when set to 1/true/yes or 0/false/no
 -  PI_SHARE_VIEWER_URL              - Base URL for /share command (default: https://pi.dev/session/)
@@ -13,7 +13,7 @@
 -    { name: "share", description: "Share session as a secret GitHub gist" },
 --- a/dist/modes/interactive/interactive-mode.js
 +++ b/dist/modes/interactive/interactive-mode.js
-@@ -2399,5 +2398,0 @@
+@@ -2449,5 +2448,0 @@
 -            if (text === "/share") {
 -                await this.handleShareCommand();
 -                this.editor.setText("");
